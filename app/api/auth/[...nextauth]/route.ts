@@ -16,13 +16,6 @@ const handler = NextAuth({
     }),
   ],
   adapter: MongoDBAdapter(clientPromise),
-  callbacks: {
-    async session({ session, user }) {
-      if (session?.user) {
-        session.user.id = user.id
-      }
-      return session
-    },
   },
   pages: {
     signIn: '/auth/login',
