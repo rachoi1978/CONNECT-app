@@ -1,10 +1,12 @@
-import NextAuth from 'next-auth'
-import GoogleProvider from 'next-auth/providers/google'
-import KakaoProvider from 'next-auth/providers/kakao'
-import { MongoDBAdapter } from '@next-auth/mongodb-adapter'
-import clientPromise from '@/lib/mongodb-adapter'
+import NextAuth, { NextAuthOptions } from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
+import KakaoProvider from "next-auth/providers/kakao";
+import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
+import clientPromise from "@/lib/mongodb";
 
-const handler = NextAuth({
+export const authOptions: NextAuthOptions = {
+  adapter: MongoDBAdapter(clientPromise),
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -15,13 +17,8 @@ const handler = NextAuth({
       clientSecret: process.env.KAKAO_CLIENT_SECRET!,
     }),
   ],
-  adapter: MongoDBAdapter(clientPromise),
-  },
-  pages: {
-    signIn: '/auth/login',
-    error: '/auth/error',
-  },
-  secret: process.env.NEXTAUTH_SECRET,
-})
+};
 
-export { handler as GET, handler as POST }
+const handler = NextAuth(authOptions);
+
+export { handler as GET, handler as POST };
